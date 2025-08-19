@@ -4,10 +4,10 @@
     "slug": "MyApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/splash-icon.png",
+    "icon": "./assets/splash.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
