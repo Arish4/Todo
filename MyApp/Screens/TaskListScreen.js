@@ -7,35 +7,51 @@ import TaskCard from "../components/TaskCard";
 export default function TaskListScreen({ navigation }) {
   const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {
-    const fetchTasks = async () => {
+  // 🔹 Fetch tasks from API
+  const fetchTasks = async () => {
+    try {
       const token = await AsyncStorage.getItem("token");
       if (token) {
         const res = await getTasks(token);
         setTasks(res);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching tasks:", err);
+    }
+  };
+
+  // 🔹 Run when screen loads or refocuses
+  useEffect(() => {
     const unsubscribe = navigation.addListener("focus", fetchTasks);
     return unsubscribe;
   }, [navigation]);
 
+  // 🔹 Toggle Task Completion
   const toggleTask = async (id, completed) => {
-    const token = await AsyncStorage.getItem("token");
-    await updateTask(id, { completed: !completed }, token);
-    const updatedTasks = tasks.map(t => t._id === id ? { ...t, completed: !completed } : t);
-    setTasks(updatedTasks);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      await updateTask(id, { completed: !completed }, token);
+      await fetchTasks(); // refresh tasks from backend
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
   };
 
+  // 🔹 Delete Task
   const removeTask = async (id) => {
-    const token = await AsyncStorage.getItem("token");
-    await deleteTask(id, token);
-    setTasks(tasks.filter(t => t._id !== id));
+    try {
+      const token = await AsyncStorage.getItem("token");
+      await deleteTask(id, token);
+      await fetchTasks(); // refresh tasks after delete
+    } catch (err) {
+      console.error("Error deleting task:", err);
+    }
   };
 
-  // 🔹 Logout function
+  // 🔹 Logout
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("token"); 
-    navigation.replace("Login"); 
+    await AsyncStorage.removeItem("token");
+    navigation.replace("Login");
   };
 
   return (
@@ -43,9 +59,7 @@ export default function TaskListScreen({ navigation }) {
       {/* Header */}
       <View style={styles.headerRow}>
         <Text style={styles.header}>Your Tasks</Text>
-        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
+       
       </View>
 
       {/* Task List */}
@@ -53,18 +67,28 @@ export default function TaskListScreen({ navigation }) {
         data={tasks}
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <TaskCard 
-            task={item} 
-            onToggle={() => toggleTask(item._id, item.completed)} 
-            onDelete={() => removeTask(item._id)} 
+          <TaskCard
+            task={item}
+            navigation={navigation} 
+            onToggle={() => toggleTask(item._id, item.completed)}
+            onDelete={() => removeTask(item._id)}
           />
         )}
+        ListEmptyComponent={
+          <Text style={styles.emptyText}>No tasks found. Add one!</Text>
+        }
       />
 
       {/* Floating Add Task Button */}
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate("AddTask")}>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate("AddTask")}
+      >
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
     </View>
   );
 }
@@ -83,10 +107,14 @@ const styles = StyleSheet.create({
   header: { fontSize: 24, fontWeight: "bold" },
 
   logoutBtn: {
+    position: "absolute",
+    bottom: 29,     
+    left: 20,        
     backgroundColor: "#F44336",
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 9,
+    paddingHorizontal: 20,
     borderRadius: 6,
+    
   },
 
   logoutText: { color: "#fff", fontSize: 14, fontWeight: "bold" },
@@ -104,5 +132,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  fabText: { color: "#fff", fontSize: 28, fontWeight: "bold" }
+  fabText: { color: "#fff", fontSize: 28, fontWeight: "bold" },
+
+  emptyText: {
+    textAlign: "center",
+    marginTop: 50,
+    fontSize: 16,
+    color: "#888",
+  },
 });

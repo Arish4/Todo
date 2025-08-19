@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-export default function TaskCard({ task, onToggle, onDelete }) {
+export default function TaskCard({ task, onToggle, onDelete, navigation }) {
   const priorityColors = { low: "#4CAF50", medium: "#FFC107", high: "#F44336" };
 
   return (
@@ -17,7 +17,6 @@ export default function TaskCard({ task, onToggle, onDelete }) {
         </Text>
         <Text style={styles.desc}>{task.description}</Text>
 
-       
         {task.category && (
           <Text style={styles.category}>Category: {task.category}</Text>
         )}
@@ -26,9 +25,15 @@ export default function TaskCard({ task, onToggle, onDelete }) {
           Deadline: {new Date(task.deadline).toLocaleString()}
         </Text>
       </TouchableOpacity>
+
+      {/* Delete button */}
       <TouchableOpacity onPress={onDelete}>
         <Text style={styles.delete}>🗑</Text>
       </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => navigation.navigate("UpdateTask", { task })}>
+    <Text style={styles.edit}>✏️</Text>
+  </TouchableOpacity>
     </Animated.View>
   );
 }
@@ -36,6 +41,7 @@ export default function TaskCard({ task, onToggle, onDelete }) {
 const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     margin: 8,
     backgroundColor: "#fff",
@@ -45,7 +51,8 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 18, fontWeight: "bold" },
   desc: { fontSize: 14, color: "#555" },
-  category: { fontSize: 13, color: "#2196F3", marginTop: 4, fontStyle: "italic" }, // 👈 styled
+  category: { fontSize: 13, color: "#2196F3", marginTop: 4, fontStyle: "italic" },
   deadline: { fontSize: 12, color: "#888", marginTop: 4 },
-  delete: { fontSize: 20, marginLeft: 10 }
+  edit: { fontSize: 20, marginLeft: 10, color: "#2196F3" },
+  delete: { fontSize: 20, marginLeft: 10, color: "#F44336" }
 });
