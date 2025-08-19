@@ -8,12 +8,26 @@ export default function RegisterScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleRegister = async () => {
+  
+    try{
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+
+      if (!passwordRegex.test(password)) {
+        alert(
+          "Password must be at least 7 characters, contain one uppercase letter, one number, and one special character."
+        );
+        return;
+      }
     const res = await registerUser(email, password);
     if (res.token) {
       await AsyncStorage.setItem("token", res.token);
       navigation.replace("Tasks");
-    } else {
+    } else if(res.message === "User already exists"){
+    alert('yser already exist')
+    }else {
       alert(res.message || "Registration failed");
+    }} catch(err){
+      alert("something went wrong")
     }
   };
 

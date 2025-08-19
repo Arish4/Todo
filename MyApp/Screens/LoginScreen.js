@@ -9,12 +9,19 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
+    try{
     const res = await loginUser(email, password);
     if (res.token) {
       await AsyncStorage.setItem("token", res.token);
       navigation.replace("Tasks");
-    } else {
+    } else if(res.message === "No email found please register" ){
+       alert("please register no email found")
+    }else if(res.message=== "Wrong password"){
+      alert("wrong password")
+    }else {
       alert(res.message || "Login failed");
+    }} catch(err){
+      alert('something went wrong');
     }
   };
 

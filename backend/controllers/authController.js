@@ -8,6 +8,16 @@ const generateToken = (id) =>
 export const register = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    //password validation
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/;
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be at least 7 characters long, include one uppercase letter, one number, and one special character",
+      });
+    }
+
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "User already exists" });
@@ -29,17 +39,26 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Check if email exists
     const user = await User.findOne({ email });
-
-    if (!user || !(await user.matchPassword(password))) {
-      return res.status(400).json({ message: "Invalid credentials" });
+    if (!user) {
+      return res.status(400).json({ message: "No email found please register" });
     }
 
+    // Check password
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Wrong password" });
+    }
+
+    // Success 
     res.json({
       token: generateToken(user._id),
       user,
     });
   } catch (err) {
+    console.error("Login error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
