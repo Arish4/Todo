@@ -53,7 +53,7 @@ export default function AddTaskScreen({ navigation }) {
         onChangeText={setDeadline}
       />
 
-      {/* ✅ Priority Picker */}
+      {/* Priority Picker */}
       <Text style={styles.label}>Priority</Text>
       <View style={styles.pickerContainer}>
         <Picker
@@ -66,7 +66,7 @@ export default function AddTaskScreen({ navigation }) {
         </Picker>
       </View>
 
-      {/* ✅ Category Picker */}
+      {/* Category Picker */}
       <Text style={styles.label}>Category</Text>
       <View style={styles.pickerContainer}>
         <Picker

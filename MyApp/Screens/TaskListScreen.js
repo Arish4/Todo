@@ -34,8 +34,8 @@ export default function TaskListScreen({ navigation }) {
 
   // 🔹 Logout function
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("token"); // clear saved token
-    navigation.replace("Login"); // go back to login screen
+    await AsyncStorage.removeItem("token"); 
+    navigation.replace("Login"); 
   };
 
   return (

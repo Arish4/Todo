@@ -4,7 +4,7 @@ import User from "../models/User.js";
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-// ✅ Register
+//Register
 export const register = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -25,7 +25,7 @@ export const register = async (req, res) => {
   }
 };
 
-// ✅ Login
+// Login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;

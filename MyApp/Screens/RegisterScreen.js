@@ -21,12 +21,12 @@ export default function RegisterScreen({ navigation }) {
     
     <View style={styles.container}>
        <Video
-        source={require("../assets/todo2.mp4")} // make sure the path is correct
+        source={require("../assets/todo2.mp4")} 
         style={styles.video}
         resizeMode="cover"
         shouldPlay
         isLooping={false}
-        isMuted={false} // 🔑 allow sound
+        isMuted={false} 
       />
 
       <Text style={styles.title}>Register</Text>
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     padding: 12, 
     borderRadius: 22, 
     marginTop: 10, 
-    width: "40%",           // makes it 80% of screen width
-    alignItems: "center"    // centers the text inside
+    width: "40%",           
+    alignItems: "center"    
   },
   btnText: { color: "#fff", fontSize: 16 }
 });

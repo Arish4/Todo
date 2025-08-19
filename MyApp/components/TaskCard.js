@@ -17,7 +17,7 @@ export default function TaskCard({ task, onToggle, onDelete }) {
         </Text>
         <Text style={styles.desc}>{task.description}</Text>
 
-        {/* ✅ Added Category */}
+       
         {task.category && (
           <Text style={styles.category}>Category: {task.category}</Text>
         )}
